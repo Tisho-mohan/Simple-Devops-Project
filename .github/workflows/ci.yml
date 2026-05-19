@@ -20,10 +20,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:latest .
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:${{ github.sha }} .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:latest
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:latest
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/simple-devops-project:latest
 
 
   deploy:
